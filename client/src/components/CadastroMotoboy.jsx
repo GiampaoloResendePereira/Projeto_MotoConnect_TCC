@@ -1,79 +1,83 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function CadastroMotoboy() {
   const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
   const [telefone, setTelefone] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
   const [placaMoto, setPlacaMoto] = useState('');
-  const [fotoRosto, setFotoRosto] = useState(null);
-  const [erro, setErro] = useState('');
-  const [sucesso, setSucesso] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name === 'fotoRosto') {
-      setFotoRosto(e.target.files[0]);
-    } else {
-      switch (name) {
-        case 'nome':
-          setNome(value);
-          break;
-        case 'cpf':
-          setCpf(value);
-          break;
-        case 'telefone':
-          setTelefone(value);
-          break;
-        case 'placaMoto':
-          setPlacaMoto(value);
-          break;
-        default:
-          break;
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (!validarFormulario()) {
+      return;
+    }
+    try {
+      const response = await fetch('http://localhost:5000/api/cadastrar-motoboy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, cpf, telefone, email, senha, placaMoto }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao registrar motoboy');
       }
+
+      alert('Motoboy registrado com sucesso! Faça login para continuar.');
+      navigate('/login');
+    } catch (error) {
+      console.error('Erro ao registrar motoboy:', error);
+      setErrorMessage('Erro ao registrar motoboy');
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErro('');
-    setSucesso('');
-    if (!fotoRosto) {
-      setErro('A foto do rosto é obrigatória.');
-      return;
+  const validarFormulario = () => {
+    if (nome.length < 3) {
+      setErrorMessage('O nome deve ter pelo menos 3 caracteres.');
+      return false;
     }
-
-    const formData = new FormData();
-    formData.append('nome', nome);
-    formData.append('cpf', cpf);
-    formData.append('telefone', telefone);
-    formData.append('placaMoto', placaMoto);
-    formData.append('fotoRosto', fotoRosto);
-
-    try {
-      await axios.post('http://localhost:5000/api/motoboys', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      setSucesso('Motoboy cadastrado com sucesso!');
-      setNome('');
-      setCpf('');
-      setTelefone('');
-      setPlacaMoto('');
-      setFotoRosto(null);
-    } catch (err) {
-      setErro('Erro ao cadastrar motoboy');
+    const cpfRegex = /^\d{11}$/;
+    if (!cpfRegex.test(cpf)) {
+      setErrorMessage('O CPF deve conter 11 dígitos numéricos.');
+      return false;
     }
+    const telefoneRegex = /^\d{10,11}$/;
+    if (!telefoneRegex.test(telefone)) {
+      setErrorMessage('O telefone deve conter entre 10 e 11 dígitos numéricos.');
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setErrorMessage('Por favor, insira um email válido.');
+      return false;
+    }
+    if (senha.length < 6) {
+      setErrorMessage('A senha deve ter pelo menos 6 caracteres.');
+      return false;
+    }
+    const placaMotoRegex = /^[A-Z]{3}\d{4}$/;
+    if (!placaMotoRegex.test(placaMoto)) {
+      setErrorMessage('A placa da moto deve seguir o formato ABC1234.');
+      return false;
+    }
+    setErrorMessage('');
+    return true;
+  };
+
+  const handleVoltar = () => {
+    navigate('/login'); // Navega para a página de login
   };
 
   return (
-    <div className="container bg-light p-5">
-      <h2 className="bg-dark text-white rounded p-3 mb-4">Cadastro de Motoboy</h2>
-
-      {erro && <div className="alert alert-danger">{erro}</div>}
-      {sucesso && <div className="alert alert-success">{sucesso}</div>}
-
-      <form onSubmit={handleSubmit}>
+    <div className="container mt-5">
+      <h2>Cadastro de Motoboy</h2>
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+      <form onSubmit={handleRegister}>
         <div className="mb-3">
           <label htmlFor="nome" className="form-label">Nome Completo</label>
           <input
@@ -82,7 +86,7 @@ function CadastroMotoboy() {
             id="nome"
             name="nome"
             value={nome}
-            onChange={handleChange}
+            onChange={(e) => setNome(e.target.value)}
             placeholder="Digite o nome completo"
             required
           />
@@ -95,7 +99,7 @@ function CadastroMotoboy() {
             id="cpf"
             name="cpf"
             value={cpf}
-            onChange={handleChange}
+            onChange={(e) => setCpf(e.target.value)}
             placeholder="Digite o CPF"
             required
           />
@@ -108,8 +112,34 @@ function CadastroMotoboy() {
             id="telefone"
             name="telefone"
             value={telefone}
-            onChange={handleChange}
+            onChange={(e) => setTelefone(e.target.value)}
             placeholder="Digite o telefone"
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">Email</label>
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Digite o email"
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="senha" className="form-label">Senha</label>
+          <input
+            type="password"
+            className="form-control"
+            id="senha"
+            name="senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            placeholder="Digite a senha"
             required
           />
         </div>
@@ -121,23 +151,15 @@ function CadastroMotoboy() {
             id="placaMoto"
             name="placaMoto"
             value={placaMoto}
-            onChange={handleChange}
+            onChange={(e) => setPlacaMoto(e.target.value)}
             placeholder="Digite a placa da moto"
             required
           />
         </div>
-        <div className="mb-3">
-          <label htmlFor="fotoRosto" className="form-label">Foto do Rosto</label>
-          <input
-            type="file"
-            className="form-control"
-            id="fotoRosto"
-            name="fotoRosto"
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-danger">Cadastrar</button>
+        <button type="submit" className="btn btn-primary">Cadastrar</button>
+        <button onClick={handleVoltar} className="btn btn-secondary" style={{ marginLeft: '10px' }}>
+          Voltar
+        </button>
       </form>
     </div>
   );

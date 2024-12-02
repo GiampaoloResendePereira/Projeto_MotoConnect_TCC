@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import logo from '../images/logo.png'; // Certifique-se de que o caminho está correto
 import { useNavigate, Link } from 'react-router-dom';
+import logo from '../images/logo.png'; // Certifique-se de que o caminho está correto
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ function Login() {
     e.preventDefault();
     setErrorMessage('');
     try {
-      const response = await fetch('/api/users/login', {
+      const response = await fetch('http://localhost:5000/api/login', { // Atualize este caminho se necessário
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, senha }),

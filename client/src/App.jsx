@@ -21,7 +21,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/cadastro-cliente" element={<CadastroCliente />} />
         <Route path="/recuperacao-senha" element={<RecuperacaoSenha />} />
         <Route path="/cliente" element={<Cliente />} />
@@ -36,7 +36,6 @@ function App() {
         <Route path="/motoboy" element={<Motoboy />} />
         <Route path="/entregas-abertas" element={<EntregasAbertas />} />
         <Route path="/minhas-entregas" element={<MinhasEntregas />} />
-        <Route path="/" element={<Login />} />
       </Routes>
     </Router>
   );
