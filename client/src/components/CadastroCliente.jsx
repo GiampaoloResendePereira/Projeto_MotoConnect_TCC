@@ -52,7 +52,7 @@ function CadastroCliente() {
   };
 
   const handleVoltar = () => {
-    navigate('/login'); // Navega para a página de login
+    navigate('/'); // Navega para a página de login
   };
 
   return (

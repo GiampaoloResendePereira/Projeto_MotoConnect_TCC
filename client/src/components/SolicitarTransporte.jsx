@@ -1,233 +1,208 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container, Form, Button, Modal } from 'react-bootstrap';
+import axios from 'axios';
 
-function SolicitarTransporte({ userId }) {
+function SolicitarTransporte() {
   const [cepOrigem, setCepOrigem] = useState('');
   const [cepDestino, setCepDestino] = useState('');
   const [peso, setPeso] = useState('');
-  const [largura, setLargura] = useState('');
   const [altura, setAltura] = useState('');
+  const [largura, setLargura] = useState('');
   const [comprimento, setComprimento] = useState('');
   const [nomeRemetente, setNomeRemetente] = useState('');
+  const [enderecoRemetente, setEnderecoRemetente] = useState('');
   const [telefoneRemetente, setTelefoneRemetente] = useState('');
   const [nomeDestinatario, setNomeDestinatario] = useState('');
+  const [enderecoDestinatario, setEnderecoDestinatario] = useState('');
   const [telefoneDestinatario, setTelefoneDestinatario] = useState('');
   const [valorFrete, setValorFrete] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-    setValorFrete(null);
+    // Substitua isso com a lógica real para calcular o valor do frete
     try {
-      const response = await axios.post('http://localhost:5000/api/calculate-frete', { userId, cepOrigem, cepDestino, peso, largura, altura, comprimento });
-      setValorFrete(response.data.valorTotal);
+      const response = await axios.post('http://localhost:5000/api/calcular-frete', {
+        cepOrigem,
+        cepDestino,
+        peso
+      });
+      setValorFrete(response.data.valorFrete);
       setShowModal(true);
     } catch (err) {
-      setError(err.response.data.error || 'Erro ao calcular o frete');
+      console.error('Erro ao calcular frete:', err);
     }
-    setLoading(false);
   };
 
-  const handleCancel = () => {
+  const handleCancelar = () => {
     setShowModal(false);
-    limparCampos();
   };
 
-  const handleSolicitarFrete = async () => {
+  const handleContinuar = async () => {
+    setShowModal(false);
     try {
-      await axios.post('http://localhost:5000/api/solicitar-frete', {
-        userId, cepOrigem, cepDestino, peso, largura, altura, comprimento, valorFrete,
-        nomeRemetente, telefoneRemetente, nomeDestinatario, telefoneDestinatario
+      await axios.post('http://localhost:5000/api/solicitar-transporte', {
+        cepOrigem,
+        cepDestino,
+        peso,
+        altura,
+        largura,
+        comprimento,
+        nomeRemetente,
+        enderecoRemetente,
+        telefoneRemetente,
+        nomeDestinatario,
+        enderecoDestinatario,
+        telefoneDestinatario,
+        valorFrete
       });
-      alert('Frete solicitado com sucesso!');
-      setShowModal(false);
-      navigate('/forma-pagamento'); // Navega para a tela de forma de pagamento
+      alert('Solicitação de transporte salva com sucesso!');
     } catch (err) {
-      setError(err.response.data.error || 'Erro ao solicitar o frete');
-      setShowModal(false);
+      console.error('Erro ao salvar solicitação de transporte:', err);
     }
-  };
-
-  const limparCampos = () => {
-    setCepOrigem('');
-    setCepDestino('');
-    setPeso('');
-    setLargura('');
-    setAltura('');
-    setComprimento('');
-    setNomeRemetente('');
-    setTelefoneRemetente('');
-    setNomeDestinatario('');
-    setTelefoneDestinatario('');
-    setValorFrete(null);
-    setError('');
   };
 
   return (
-    <div className="container bg-light p-5">
+    <Container className="bg-light p-5">
       <h2 className="bg-dark text-white rounded p-3 mb-4">Solicitar Transporte</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="cepOrigem" className="form-label">CEP de Origem</label>
-          <input
+      <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="formCepOrigem" className="mb-3">
+          <Form.Label>CEP de Origem</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
-            id="cepOrigem"
+            placeholder="Digite o CEP de origem"
             value={cepOrigem}
             onChange={(e) => setCepOrigem(e.target.value)}
-            placeholder="Digite o CEP de origem"
             required
           />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="cepDestino" className="form-label">CEP de Destino</label>
-          <input
+        </Form.Group>
+        <Form.Group controlId="formCepDestino" className="mb-3">
+          <Form.Label>CEP de Destino</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
-            id="cepDestino"
+            placeholder="Digite o CEP de destino"
             value={cepDestino}
             onChange={(e) => setCepDestino(e.target.value)}
-            placeholder="Digite o CEP de destino"
             required
           />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="peso" className="form-label">Peso (kg)</label>
-          <input
+        </Form.Group>
+        <Form.Group controlId="formPeso" className="mb-3">
+          <Form.Label>Peso da Mercadoria (kg)</Form.Label>
+          <Form.Control
             type="number"
-            className="form-control"
-            id="peso"
+            placeholder="Digite o peso da mercadoria"
             value={peso}
             onChange={(e) => setPeso(e.target.value)}
-            placeholder="Digite o peso em kg"
             required
           />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="largura" className="form-label">Largura (cm)</label>
-          <input
+        </Form.Group>
+        <Form.Group controlId="formAltura" className="mb-3">
+          <Form.Label>Altura da Mercadoria (cm)</Form.Label>
+          <Form.Control
             type="number"
-            className="form-control"
-            id="largura"
-            value={largura}
-            onChange={(e) => setLargura(e.target.value)}
-            placeholder="Digite a largura em cm"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="altura" className="form-label">Altura (cm)</label>
-          <input
-            type="number"
-            className="form-control"
-            id="altura"
+            placeholder="Digite a altura da mercadoria"
             value={altura}
             onChange={(e) => setAltura(e.target.value)}
-            placeholder="Digite a altura em cm"
+            required
           />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="comprimento" className="form-label">Comprimento (cm)</label>
-          <input
+        </Form.Group>
+        <Form.Group controlId="formLargura" className="mb-3">
+          <Form.Label>Largura da Mercadoria (cm)</Form.Label>
+          <Form.Control
             type="number"
-            className="form-control"
-            id="comprimento"
+            placeholder="Digite a largura da mercadoria"
+            value={largura}
+            onChange={(e) => setLargura(e.target.value)}
+            required
+          />
+        </Form.Group>
+        <Form.Group controlId="formComprimento" className="mb-3">
+          <Form.Label>Comprimento da Mercadoria (cm)</Form.Label>
+          <Form.Control
+            type="number"
+            placeholder="Digite o comprimento da mercadoria"
             value={comprimento}
             onChange={(e) => setComprimento(e.target.value)}
-            placeholder="Digite o comprimento em cm"
+            required
           />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="nomeRemetente" className="form-label">Nome do Remetente</label>
-          <input
+        </Form.Group>
+        <Form.Group controlId="formNomeRemetente" className="mb-3">
+          <Form.Label>Nome Completo do Remetente</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
-            id="nomeRemetente"
+            placeholder="Digite o nome completo do remetente"
             value={nomeRemetente}
             onChange={(e) => setNomeRemetente(e.target.value)}
-            placeholder="Digite o nome do remetente"
             required
           />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="telefoneRemetente" className="form-label">Telefone do Remetente</label>
-          <input
+        </Form.Group>
+        <Form.Group controlId="formEnderecoRemetente" className="mb-3">
+          <Form.Label>Endereço Completo do Remetente</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
-            id="telefoneRemetente"
+            placeholder="Digite o endereço completo do remetente"
+            value={enderecoRemetente}
+            onChange={(e) => setEnderecoRemetente(e.target.value)}
+            required
+          />
+        </Form.Group>
+        <Form.Group controlId="formTelefoneRemetente" className="mb-3">
+          <Form.Label>Telefone do Remetente</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Digite o telefone do remetente"
             value={telefoneRemetente}
             onChange={(e) => setTelefoneRemetente(e.target.value)}
-            placeholder="Digite o telefone do remetente"
             required
           />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="nomeDestinatario" className="form-label">Nome do Destinatário</label>
-          <input
+        </Form.Group>
+        <Form.Group controlId="formNomeDestinatario" className="mb-3">
+          <Form.Label>Nome Completo do Destinatário</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
-            id="nomeDestinatario"
+            placeholder="Digite o nome completo do destinatário"
             value={nomeDestinatario}
             onChange={(e) => setNomeDestinatario(e.target.value)}
-            placeholder="Digite o nome do destinatário"
             required
           />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="telefoneDestinatario" className="form-label">Telefone do Destinatário</label>
-          <input
+        </Form.Group>
+        <Form.Group controlId="formEnderecoDestinatario" className="mb-3">
+          <Form.Label>Endereço Completo do Destinatário</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
-            id="telefoneDestinatario"
+            placeholder="Digite o endereço completo do destinatário"
+            value={enderecoDestinatario}
+            onChange={(e) => setEnderecoDestinatario(e.target.value)}
+            required
+          />
+        </Form.Group>
+        <Form.Group controlId="formTelefoneDestinatario" className="mb-3">
+          <Form.Label>Telefone do Destinatário</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Digite o telefone do destinatário"
             value={telefoneDestinatario}
             onChange={(e) => setTelefoneDestinatario(e.target.value)}
-            placeholder="Digite o telefone do destinatário"
             required
           />
-        </div>
+        </Form.Group>
+        <Button variant="danger" type="submit">Solicitar Transporte</Button>
+      </Form>
 
-        <button type="submit" className="btn btn-danger" disabled={loading}>
-          {loading ? 'Calculando...' : 'Calcular Frete'}
-        </button>
-      </form>
-
-      {showModal && (
-        <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Resultado do Frete</h5>
-                <button type="button" className="btn-close" onClick={handleCancel}></button>
-              </div>
-              <div className="modal-body">
-                <p><strong>Valor do frete:</strong> R$ {valorFrete.toFixed(2)}</p>
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={handleCancel}>Cancelar</button>
-                <button className="btn btn-danger" onClick={handleSolicitarFrete}>Solicitar Frete</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      <Modal show={showModal} onHide={handleCancelar}>
+        <Modal.Header closeButton>
+          <Modal.Title>Valor do Frete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>O valor do frete é R$ {valorFrete?.toFixed(2)}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCancelar}>Cancelar</Button>
+          <Button variant="danger" onClick={handleContinuar}>Continuar</Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
   );
 }
 
