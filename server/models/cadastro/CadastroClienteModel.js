@@ -15,4 +15,16 @@ const buscarClientePorEmail = async (email) => {
   return results[0];
 };
 
-export { inserirCliente, buscarClientePorEmail };
+const buscarClientePorId = async (id) => {
+  console.log('Buscando cliente por ID:', id);
+  const query = `SELECT * FROM cadastro_cliente WHERE id = ?`;
+  const [results] = await db.execute(query, [id]);
+  if (results.length === 0) {
+    console.log('Cliente não encontrado');
+    return null; // Retorne null se o cliente não for encontrado
+  }
+  console.log('Cliente encontrado:', results[0]);
+  return results[0];
+};
+
+export { inserirCliente, buscarClientePorEmail, buscarClientePorId };
