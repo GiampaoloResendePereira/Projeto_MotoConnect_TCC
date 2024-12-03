@@ -10,6 +10,16 @@ function CalculoFrete() {
   const [largura, setLargura] = useState('');
   const [altura, setAltura] = useState('');
   const [comprimento, setComprimento] = useState('');
+  const [enderecoOrigem, setEnderecoOrigem] = useState('');
+  const [bairroOrigem, setBairroOrigem] = useState('');
+  const [numeroOrigem, setNumeroOrigem] = useState('');
+  const [nomeOrigem, setNomeOrigem] = useState(''); // Adicionando a variável nomeOrigem
+  const [telefoneOrigem, setTelefoneOrigem] = useState(''); // Adicionando a variável telefoneOrigem
+  const [enderecoDestino, setEnderecoDestino] = useState('');
+  const [bairroDestino, setBairroDestino] = useState('');
+  const [numeroDestino, setNumeroDestino] = useState('');
+  const [nomeDestino, setNomeDestino] = useState(''); // Adicionando a variável nomeDestino
+  const [telefoneDestino, setTelefoneDestino] = useState(''); // Adicionando a variável telefoneDestino
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [valorFrete, setValorFrete] = useState(0);
@@ -18,6 +28,46 @@ function CalculoFrete() {
   const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate(); // Usando useNavigate para redirecionamento
+
+  const handleCepOrigemChange = async (e) => {
+    const cep = e.target.value;
+    setCepOrigem(cep);
+
+    if (cep.length === 8) {
+      try {
+        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        setEnderecoOrigem(response.data.logradouro);
+        setBairroOrigem(response.data.bairro);
+      } catch (err) {
+        console.error('Erro ao buscar endereço:', err);
+        setEnderecoOrigem('');
+        setBairroOrigem('');
+      }
+    } else {
+      setEnderecoOrigem('');
+      setBairroOrigem('');
+    }
+  };
+
+  const handleCepDestinoChange = async (e) => {
+    const cep = e.target.value;
+    setCepDestino(cep);
+
+    if (cep.length === 8) {
+      try {
+        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        setEnderecoDestino(response.data.logradouro);
+        setBairroDestino(response.data.bairro);
+      } catch (err) {
+        console.error('Erro ao buscar endereço:', err);
+        setEnderecoDestino('');
+        setBairroDestino('');
+      }
+    } else {
+      setEnderecoDestino('');
+      setBairroDestino('');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,37 +130,42 @@ function CalculoFrete() {
   };
 
   return (
+
     <div className="container bg-light p-5">
-      <h2 className="bg-dark text-white rounded p-3 mb-4">Cálculo de Frete</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
+    <h2 className="bg-dark text-white rounded p-3 mb-4">Cálculo de Frete</h2>
+    {error && <div className="alert alert-danger">{error}</div>}
+    <form onSubmit={handleSubmit}>
+      <div className="row">
+        <div className="col-md-6 mb-3">
           <label htmlFor="cepOrigem" className="form-label">CEP de Origem</label>
           <input
             type="text"
             className="form-control"
             id="cepOrigem"
             value={cepOrigem}
-            onChange={(e) => setCepOrigem(e.target.value)}
+            onChange={handleCepOrigemChange}
             placeholder="Digite o CEP de origem"
             required
           />
+          {enderecoOrigem && <small className="form-text text-muted">{enderecoOrigem}, {bairroOrigem}</small>}
         </div>
-
-        <div className="mb-3">
+        <div className="col-md-6 mb-3">
           <label htmlFor="cepDestino" className="form-label">CEP de Destino</label>
           <input
             type="text"
             className="form-control"
             id="cepDestino"
             value={cepDestino}
-            onChange={(e) => setCepDestino(e.target.value)}
+            onChange={handleCepDestinoChange}
             placeholder="Digite o CEP de destino"
             required
           />
+          {enderecoDestino && <small className="form-text text-muted">{enderecoDestino}, {bairroDestino}</small>}
         </div>
-
-        <div className="mb-3">
+      </div>
+  
+      <div className="row">
+        <div className="col-md-6 mb-3">
           <label htmlFor="peso" className="form-label">Peso (kg)</label>
           <input
             type="number"
@@ -122,20 +177,7 @@ function CalculoFrete() {
             required
           />
         </div>
-
-        <div className="mb-3">
-          <label htmlFor="largura" className="form-label">Largura (cm)</label>
-          <input
-            type="number"
-            className="form-control"
-            id="largura"
-            value={largura}
-            onChange={(e) => setLargura(e.target.value)}
-            placeholder="Digite a largura em cm"
-          />
-        </div>
-
-        <div className="mb-3">
+        <div className="col-md-6 mb-3">
           <label htmlFor="altura" className="form-label">Altura (cm)</label>
           <input
             type="number"
@@ -146,8 +188,21 @@ function CalculoFrete() {
             placeholder="Digite a altura em cm"
           />
         </div>
-
-        <div className="mb-3">
+      </div>
+  
+      <div className="row">
+        <div className="col-md-6 mb-3">
+          <label htmlFor="largura" className="form-label">Largura (cm)</label>
+          <input
+            type="number"
+            className="form-control"
+            id="largura"
+            value={largura}
+            onChange={(e) => setLargura(e.target.value)}
+            placeholder="Digite a largura em cm"
+          />
+        </div>
+        <div className="col-md-6 mb-3">
           <label htmlFor="comprimento" className="form-label">Comprimento (cm)</label>
           <input
             type="number"
@@ -158,35 +213,131 @@ function CalculoFrete() {
             placeholder="Digite o comprimento em cm"
           />
         </div>
-
-        <button type="submit" className="btn btn-danger" disabled={loading}>
-          {loading ? 'Calculando...' : 'Calcular Frete'}
-        </button>
-      </form>
-
-      {showModal && (
-        <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Resultado do Frete</h5>
-                <button type="button" className="btn-close" onClick={handleCancel}></button>
-              </div>
-              <div className="modal-body">
-                <p><strong>Valor do frete:</strong> R$ {valorFrete.toFixed(2)}</p>
-                <p><strong>Distância:</strong> {distancia.toFixed(2)} km</p>
-                <p><strong>Tempo de Deslocamento:</strong> {tempoDeslocamento} minutos</p>
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={handleCancel}>Cancelar</button>
-                <button className="btn btn-danger" onClick={handleSolicitarFrete}>Solicitar Frete</button>
-              </div>
+      </div>
+  
+      <button type="submit" className="btn btn-danger" disabled={loading}>
+        {loading ? 'Calculando...' : 'Calcular Frete'}
+      </button>
+    </form>
+  
+    <form onSubmit={handleSubmit}>
+      <div className="row mt-4">
+        <h4>Informações do Remetente</h4>
+        <div className="col-md-6 mb-3">
+          <label htmlFor="nomeOrigem" className="form-label">Nome do Remetente</label>
+          <input
+            type="text"
+            className="form-control"
+            id="nomeOrigem"
+            value={nomeOrigem}
+            onChange={(e) => setNomeOrigem(e.target.value)}
+            placeholder="Digite o nome do remetente"
+            required
+          />
+        </div>
+        <div className="col-md-6 mb-3">
+          <label htmlFor="telefoneOrigem" className="form-label">Telefone do Remetente</label>
+          <input
+            type="text"
+            className="form-control"
+            id="telefoneOrigem"
+            value={telefoneOrigem}
+            onChange={(e) => setTelefoneOrigem(e.target.value)}
+            placeholder="Digite o telefone do remetente"
+            required
+          />
+        </div>
+        <div className="col-md-6 mb-3">
+          <label htmlFor="numeroOrigem" className="form-label">Número (Origem)</label>
+          <input
+            type="text"
+            className="form-control"
+            id="numeroOrigem"
+            value={numeroOrigem}
+            onChange={(e) => setNumeroOrigem(e.target.value)}
+            placeholder="Digite o número"
+            required
+          />
+        </div>
+      </div>
+  
+      <div className="row mt-4">
+        <h4>Informações do Destinatário</h4>
+        <div className="col-md-6 mb-3">
+          <label htmlFor="nomeDestino" className="form-label">Nome do Destinatário</label>
+          <input
+            type="text"
+            className="form-control"
+            id="nomeDestino"
+            value={nomeDestino}
+            onChange={(e) => setNomeDestino(e.target.value)}
+            placeholder="Digite o nome do destinatário"
+            required
+          />
+        </div>
+        <div className="col-md-6 mb-3">
+          <label htmlFor="telefoneDestino" className="form-label">Telefone do Destinatário</label>
+          <input
+            type="text"
+            className="form-control"
+            id="telefoneDestino"
+            value={telefoneDestino}
+            onChange={(e) => setTelefoneDestino(e.target.value)}
+            placeholder="Digite o telefone do destinatário"
+            required
+          />
+        </div>
+        <div className="col-md-6 mb-3">
+          <label htmlFor="numeroDestino" className="form-label">Número (Destino)</label>
+          <input
+            type="text"
+            className="form-control"
+            id="numeroDestino"
+            value={numeroDestino}
+            onChange={(e) => setNumeroDestino(e.target.value)}
+            placeholder="Digite o número"
+            required
+          />
+        </div>
+      </div>
+  
+      <button type="submit" className="btn btn-danger" disabled={loading}>
+        {loading ? 'Solicitando...' : 'Solicitar Frete'}
+      </button>
+    </form>
+  
+    {showModal && (
+      <div className="modal show d-block" tabIndex="-1">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Resultado do Frete</h5>
+              <button type="button" className="btn-close" onClick={handleCancel}></button>
+            </div>
+            <div className="modal-body">
+              <p><strong>Valor do frete:</strong> R$ {valorFrete.toFixed(2)}</p>
+              <p><strong>Distância:</strong> {distancia.toFixed(2)} km</p>
+              <p><strong>Tempo de Deslocamento:</strong> {tempoDeslocamento} minutos</p>
+              <p><strong>Endereço de Origem:</strong> {enderecoOrigem}, {bairroOrigem}, {numeroOrigem}</p>
+              <p><strong>Endereço de Destino:</strong> {enderecoDestino}, {bairroDestino}, {numeroDestino}</p>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={handleCancel}>Cancelar</button>
+              <button className="btn btn-danger" onClick={handleSolicitarFrete}>Solicitar Frete</button>
             </div>
           </div>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+  
+
+
+
+
+
+
+);
 }
 
 export default CalculoFrete;
