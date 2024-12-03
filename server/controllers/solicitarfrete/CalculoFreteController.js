@@ -1,30 +1,64 @@
-import { obterDistancia, obterParametrosFrete } from '../solicitarfrete/models/DistanciaModel.js';
+import { verificarCep, obterDistancia, obterParametrosFrete } from '../../models/solicitarfrete/CalculoFreteModel.js';
 
 const calcularFrete = async (req, res) => {
-  const { cepOrigem, cepDestino, peso } = req.body;
+  const { cepOrigem, cepDestino, peso, largura, altura, comprimento } = req.body;
+
+  console.log('Dados recebidos:', { cepOrigem, cepDestino, peso, largura, altura, comprimento });
+
+  if (peso > 12) {
+    console.log('Erro: Peso acima de 12Kg');
+    return res.status(400).json({ error: 'Não é possível transportar mercadorias acima de 12Kg' });
+  }
 
   try {
-    const { distancia_km, tempo_deslocamento_min } = await obterDistancia(cepOrigem, cepDestino);
-    const parametros = await obterParametrosFrete();
-
-    let valorPeso;
-    if (peso < 1) {
-      valorPeso = parametros.menos_1kg;
-    } else if (peso >= 1 && peso <= 3) {
-      valorPeso = parametros.entre_1kge3kg;
-    } else if (peso > 3 && peso <= 8) {
-      valorPeso = parametros.entre_3kge8kg;
-    } else if (peso > 8 && peso <= 12) {
-      valorPeso = parametros.entre_8kge12kg;
-    } else {
-      return res.status(400).json({ error: 'Não é possível transportar mercadorias acima de 12kg' });
+    const cepOrigemExiste = await verificarCep(cepOrigem);
+    if (!cepOrigemExiste) {
+      console.log('Erro: CEP de origem não encontrado');
+      return res.status(400).json({ error: 'CEP de origem não encontrado' });
     }
 
-    const valorDistancia = distancia_km * parametros.km_rodado;
-    const valorTempo = tempo_deslocamento_min * parametros.tempo_deslocamento;
-    const valorFrete = valorPeso + valorDistancia + valorTempo;
+    const cepDestinoExiste = await verificarCep(cepDestino);
+    if (!cepDestinoExiste) {
+      console.log('Erro: CEP de destino não encontrado');
+      return res.status(400).json({ error: 'CEP de destino não encontrado' });
+    }
 
-    res.status(200).json({ valorFrete: valorFrete.toFixed(2), distancia_km, tempo_deslocamento_min });
+    const result = await obterDistancia(cepOrigem, cepDestino);
+    if (!result) {
+      console.log('Erro: Distância não encontrada');
+      return res.status(400).json({ error: 'Distância não encontrada' });
+    }
+
+    const distancia = parseFloat(result.distancia_km);
+    const tempoDeslocamento = parseFloat(result.tempo_deslocamento_min);
+
+    const parametros = await obterParametrosFrete();
+    if (!parametros) {
+      console.log('Erro: Parâmetros de frete não encontrados');
+      return res.status(400).json({ error: 'Parâmetros de frete não encontrados' });
+    }
+
+    console.log('Parâmetros de frete:', parametros);
+
+    let valorFrete = 0;
+    if (peso < 1) {
+      valorFrete = parseFloat(parametros.menos_1kg);
+    } else if (peso >= 1 && peso < 3) {
+      valorFrete = parseFloat(parametros.entre_1kge3kg);
+    } else if (peso >= 3 && peso < 8) {
+      valorFrete = parseFloat(parametros.entre_3kge8kg);
+    } else if (peso >= 8 && peso <= 12) {
+      valorFrete = parseFloat(parametros.entre_8kge12kg);
+    }
+
+    const custoKm = parseFloat(parametros.km_rodado);
+    const custoDeslocamento = parseFloat(parametros.tempo_deslocamento);
+
+    const valorTotalFrete = parseFloat((valorFrete + (distancia * custoKm) + custoDeslocamento).toFixed(2));
+
+    console.log('Valor Total do Frete:', valorTotalFrete);
+
+    res.json({ valorFrete: valorTotalFrete, distancia, tempoDeslocamento });
   } catch (err) {
     console.error('Erro ao calcular frete:', err);
     res.status(500).json({ error: 'Erro ao calcular frete' });
