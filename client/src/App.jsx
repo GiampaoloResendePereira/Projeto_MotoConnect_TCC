@@ -9,6 +9,7 @@ import Administrador from './components/Administrador';
 import GerenciamentoEntregas from './components/GerenciamentoEntregas';
 import EditarParametro from './components/EditarParametro';
 import SolicitarTransporte from './components/SolicitarTransporte';
+import CalculoFrete from './components/CalculoFrete';
 import AcompanhamentoFrete from './components/AcompanhamentoFrete';
 import EntregasAbertas from './components/EntregasAbertas';
 import MinhasEntregas from './components/MinhasEntregas';
@@ -26,6 +27,7 @@ function App() {
         <Route path="/recuperacao-senha" element={<RecuperacaoSenha />} />
         <Route path="/cliente" element={<Cliente />} />
         <Route path="/solicitar-transporte" element={<SolicitarTransporte />} />
+        <Route path="/calculo-frete" element={<CalculoFrete />} />
         <Route path="/acompanhamento-frete" element={<AcompanhamentoFrete />} />
         <Route path="/forma-pagamento" element={<FormaPagamento />} />
         <Route path="/administrador" element={<Administrador />} />

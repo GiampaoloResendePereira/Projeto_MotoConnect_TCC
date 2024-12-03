@@ -26,7 +26,7 @@ function Cliente() {
         <Container className="d-flex justify-content-between align-items-center">
           <img src={logo} alt="Logo" height="50" />
           <Nav className="me-auto">
-            <Nav.Link href="/solicitar-transporte">Solicitação de Transporte</Nav.Link>
+          <Nav.Link href="/calculo-frete">Solicitação de Transporte</Nav.Link>
             <Nav.Link href="/acompanhamento-frete">Acompanhamento do frete</Nav.Link>
           </Nav>
           <div className="d-flex align-items-center text-white">

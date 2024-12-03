@@ -52,12 +52,12 @@ function CadastroCliente() {
   };
 
   const handleVoltar = () => {
-    navigate('/'); // Navega para a página de login
+    navigate('/login'); // Navega para a página de login
   };
 
   return (
     <div className="container mt-5">
-      <h2>Cadastro</h2>
+      <h2>Cadastro Cliente</h2>
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       <form onSubmit={handleRegister}>
         <div className="mb-3">
