@@ -18,7 +18,7 @@ function Cliente() {
       <Navbar bg="danger" variant="dark">
         <Container className="d-flex justify-content-center align-items-center">
           <h2 style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', color: '#FFFFFF', fontSize: '1.0em', padding: '5px 10px', borderRadius: '5px', textAlign: 'center' }}>
-            Bem-vindo meu cliente, <span style={{ color: '#FFFFFF' }}>{user.nome}</span>!
+            Bem-vindo Cliente, <span style={{ color: '#FFFFFF' }}>{user.nome}</span>!
           </h2>
         </Container>
       </Navbar>

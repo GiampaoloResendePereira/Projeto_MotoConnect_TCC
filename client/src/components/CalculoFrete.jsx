@@ -75,6 +75,16 @@ function CalculoFrete() {
     setError('');
 
     // Validações
+    if (
+      !cepOrigem || !cepDestino || !peso || !largura || !altura || !comprimento ||
+      !nomeOrigem || !telefoneOrigem || !numeroOrigem ||
+      !nomeDestino || !telefoneDestino || !numeroDestino
+    ) {
+      setError('Todos os campos devem ser preenchidos.');
+      setLoading(false);
+      return;
+    }
+
     if (peso <= 0 || peso > 12) {
       setError('O peso deve ser maior que 0 e até 12kg.');
       setLoading(false);
@@ -151,7 +161,8 @@ function CalculoFrete() {
       });
 
       if (response.status === 200) {
-        navigate('/solicitacao-frete');
+        alert('Solicitação de transporte feita com sucesso!');
+        navigate('/cliente'); // Redirecionar para a interface do cliente
       } else {
         setError('Erro ao solicitar frete. Por favor, tente novamente.');
       }
@@ -164,6 +175,8 @@ function CalculoFrete() {
   };
 
   return (
+
+
 
 
     <div className="container bg-light p-5">
@@ -279,7 +292,7 @@ function CalculoFrete() {
         />
       </div>
       <div className="col-md-6 mb-3">
-        <label htmlFor="numeroOrigem" className="form-label">Número (Origem)</label>
+        <label htmlFor="numeroOrigem" className="form-label">Número residência (Origem)</label>
         <input
           type="text"
           className="form-control"
@@ -319,7 +332,7 @@ function CalculoFrete() {
         />
       </div>
       <div className="col-md-6 mb-3">
-        <label htmlFor="numeroDestino" className="form-label">Número (Destino)</label>
+        <label htmlFor="numeroDestino" className="form-label">Número residência (Destino)</label>
         <input
           type="text"
           className="form-control"
@@ -333,37 +346,39 @@ function CalculoFrete() {
     </div>
 
     <button type="submit" className="btn btn-danger" disabled={loading}>
-      {loading ? 'Calculando...' : 'Calcular Frete'}
-    </button>
+        {loading ? 'Calculando...' : 'Calcular Frete'}
+      </button>
   </form>
 
-  {showModal && (
-  <div className="modal show d-block" tabIndex="-1">
-    <div className="modal-dialog">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h5 className="modal-title">Resultado do Frete</h5>
-          <button type="button" className="btn-close" onClick={handleCancel}></button>
-        </div>
-        <div className="modal-body">
-          <p><strong>Valor do frete:</strong> R$ {valorFrete.toFixed(2)}</p>
-          <p><strong>Distância:</strong> {distancia.toFixed(2)} km</p>
-          <p><strong>Tempo de Deslocamento:</strong> {tempoDeslocamento} minutos</p>
-          <p><strong>Nome do Remetente:</strong> {nomeOrigem}</p>
-          <p><strong>Endereço de Origem:</strong> {enderecoOrigem}, {bairroOrigem}, {numeroOrigem}</p>
-          <p><strong>Nome do Destinatário:</strong> {nomeDestino}</p>
-          <p><strong>Endereço de Destino:</strong> {enderecoDestino}, {bairroDestino}, {numeroDestino}</p>
-        </div>
-        <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={handleCancel}>Cancelar</button>
-          <button className="btn btn-danger" onClick={handleSolicitarFrete}>Solicitar Frete</button>
+  
+    {showModal && (
+      <div className="modal show d-block" tabIndex="-1">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Resultado do Frete</h5>
+              <button type="button" className="btn-close" onClick={handleCancel}></button>
+            </div>
+            <div className="modal-body">
+              <p><strong>Valor do frete:</strong> R$ {valorFrete.toFixed(2)}</p>
+              <p><strong>Distância:</strong> {distancia.toFixed(2)} km</p>
+              <p><strong>Tempo de Deslocamento:</strong> {tempoDeslocamento} minutos</p>
+              <p><strong>Nome do Remetente:</strong> {nomeOrigem}</p>
+              <p><strong>Endereço de Origem:</strong> {enderecoOrigem}, {bairroOrigem}, {numeroOrigem}</p>
+              <p><strong>Nome do Destinatário:</strong> {nomeDestino}</p>
+              <p><strong>Endereço de Destino:</strong> {enderecoDestino}, {bairroDestino}, {numeroDestino}</p>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={handleCancel}>Cancelar</button>
+              <button className="btn btn-danger" onClick={handleSolicitarFrete}>Solicitar Frete</button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    )}
+    
   </div>
-)}
-
-</div>
+  
 
   
 
