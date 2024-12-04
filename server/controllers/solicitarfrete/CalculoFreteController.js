@@ -1,4 +1,4 @@
-import { verificarCep, obterDistancia, obterParametrosFrete } from '../../models/solicitarfrete/CalculoFreteModel.js';
+import { verificarCep, obterDistancia, obterParametrosFrete, salvarSolicitacaoFrete } from '../../models/solicitarfrete/CalculoFreteModel.js';
 
 const calcularFrete = async (req, res) => {
   const { cepOrigem, cepDestino, peso, largura, altura, comprimento } = req.body;
@@ -65,4 +65,29 @@ const calcularFrete = async (req, res) => {
   }
 };
 
-export { calcularFrete };
+const solicitarFrete = async (req, res) => {
+  const {
+    cepOrigem, enderecoOrigem, bairroOrigem, numeroOrigem, nomeOrigem, telefoneOrigem,
+    cepDestino, enderecoDestino, bairroDestino, numeroDestino, nomeDestino, telefoneDestino,
+    peso, altura, largura, comprimento, valorFrete, distancia, tempoDeslocamento
+  } = req.body;
+
+  try {
+    const result = await salvarSolicitacaoFrete({
+      cepOrigem, enderecoOrigem, bairroOrigem, numeroOrigem, nomeOrigem, telefoneOrigem,
+      cepDestino, enderecoDestino, bairroDestino, numeroDestino, nomeDestino, telefoneDestino,
+      peso, altura, largura, comprimento, valorFrete, distancia, tempoDeslocamento
+    });
+
+    if (result.affectedRows === 1) {
+      res.status(200).json({ message: 'Solicitação de frete salva com sucesso' });
+    } else {
+      res.status(500).json({ error: 'Erro ao salvar solicitação de frete' });
+    }
+  } catch (err) {
+    console.error('Erro ao salvar solicitação de frete:', err);
+    res.status(500).json({ error: 'Erro ao salvar solicitação de frete' });
+  }
+};
+
+export { calcularFrete, solicitarFrete };

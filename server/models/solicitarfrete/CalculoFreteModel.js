@@ -34,4 +34,22 @@ const obterParametrosFrete = async () => {
   };
 };
 
-export { verificarCep, obterDistancia, obterParametrosFrete };
+const salvarSolicitacaoFrete = async (dadosFrete) => {
+  const query = `
+    INSERT INTO solicitacoes_frete (
+      cep_origem, endereco_origem, bairro_origem, numero_origem, nome_origem, telefone_origem,
+      cep_destino, endereco_destino, bairro_destino, numero_destino, nome_destino, telefone_destino,
+      peso, altura, largura, comprimento, valor_frete, distancia, tempo_deslocamento, status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  const valores = [
+    dadosFrete.cepOrigem, dadosFrete.enderecoOrigem, dadosFrete.bairroOrigem, dadosFrete.numeroOrigem, dadosFrete.nomeOrigem, dadosFrete.telefoneOrigem,
+    dadosFrete.cepDestino, dadosFrete.enderecoDestino, dadosFrete.bairroDestino, dadosFrete.numeroDestino, dadosFrete.nomeDestino, dadosFrete.telefoneDestino,
+    dadosFrete.peso, dadosFrete.altura, dadosFrete.largura, dadosFrete.comprimento, dadosFrete.valorFrete, dadosFrete.distancia, dadosFrete.tempoDeslocamento, 'aguardando'
+  ];
+
+  const [result] = await db.execute(query, valores);
+  return result;
+};
+
+export { verificarCep, obterDistancia, obterParametrosFrete, salvarSolicitacaoFrete };
