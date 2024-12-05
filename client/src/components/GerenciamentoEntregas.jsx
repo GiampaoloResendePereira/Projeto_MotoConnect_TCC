@@ -47,6 +47,11 @@ function GerenciamentoEntregas() {
 
   const handleCloseModal = () => setShowModal(false);
 
+  const handleVoltar = () => {
+    navigate('/administrador'); // Navega para a página anterior
+  };
+
+
   return (
     <div className="container bg-light p-5">
       <h2 className="bg-dark text-white rounded p-3 mb-4">Gerenciamento de Entregas</h2>
@@ -107,6 +112,10 @@ function GerenciamentoEntregas() {
           <Button variant="secondary" onClick={handleCloseModal}>Fechar</Button>
         </Modal.Footer>
       </Modal>
+
+      <button onClick={handleVoltar} className="btn btn-secondary">
+          Voltar
+        </button>
     </div>
   );
 }

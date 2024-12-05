@@ -70,7 +70,7 @@ function CadastroMotoboy() {
   };
 
   const handleVoltar = () => {
-    navigate('/login'); // Navega para a página de login
+    navigate('/administrador'); // Navega para a página de login
   };
 
   return (
