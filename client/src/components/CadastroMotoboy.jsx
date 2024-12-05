@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container, Row, Col, Form, Button, Alert, Card } from 'react-bootstrap';
 
 function CadastroMotoboy() {
   const [nome, setNome] = useState('');
@@ -28,8 +29,8 @@ function CadastroMotoboy() {
         throw new Error('Erro ao registrar motoboy');
       }
 
-      alert('Motoboy registrado com sucesso! Faça login para continuar.');
-      navigate('/login');
+      alert('Motoboy registrado com sucesso!');
+      navigate('/administrador');
     } catch (error) {
       console.error('Erro ao registrar motoboy:', error);
       setErrorMessage('Erro ao registrar motoboy');
@@ -69,99 +70,109 @@ function CadastroMotoboy() {
     return true;
   };
 
-  const handleVoltar = () => {
-    navigate('/administrador'); // Navega para a página de login
+  const limparCampos = () => {
+    setNome('');
+    setCpf('');
+    setTelefone('');
+    setEmail('');
+    setSenha('');
+    setPlacaMoto('');
+    setErrorMessage('');
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Cadastro de Motoboy</h2>
-      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-      <form onSubmit={handleRegister}>
-        <div className="mb-3">
-          <label htmlFor="nome" className="form-label">Nome Completo</label>
-          <input
-            type="text"
-            className="form-control"
-            id="nome"
-            name="nome"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            placeholder="Digite o nome completo"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="cpf" className="form-label">CPF</label>
-          <input
-            type="text"
-            className="form-control"
-            id="cpf"
-            name="cpf"
-            value={cpf}
-            onChange={(e) => setCpf(e.target.value)}
-            placeholder="Digite o CPF"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="telefone" className="form-label">Telefone</label>
-          <input
-            type="text"
-            className="form-control"
-            id="telefone"
-            name="telefone"
-            value={telefone}
-            onChange={(e) => setTelefone(e.target.value)}
-            placeholder="Digite o telefone"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email</label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Digite o email"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="senha" className="form-label">Senha</label>
-          <input
-            type="password"
-            className="form-control"
-            id="senha"
-            name="senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            placeholder="Digite a senha"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="placaMoto" className="form-label">Placa da Moto</label>
-          <input
-            type="text"
-            className="form-control"
-            id="placaMoto"
-            name="placaMoto"
-            value={placaMoto}
-            onChange={(e) => setPlacaMoto(e.target.value)}
-            placeholder="Digite a placa da moto"
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">Cadastrar</button>
-        <button onClick={handleVoltar} className="btn btn-secondary" style={{ marginLeft: '10px' }}>
-          Voltar
-        </button>
-      </form>
-    </div>
+    <Container className="bg-light p-5 rounded shadow-lg ">
+      <Row className="mb-4">
+        <Col>
+          <h2 className="bg-dark text-white rounded p-3">Cadastro de Motoboy</h2>
+        </Col>
+      </Row>
+
+      {errorMessage && (
+        <Row className="mb-3">
+          <Col>
+            <Alert variant="danger">{errorMessage}</Alert>
+          </Col>
+        </Row>
+      )}
+
+      <Card className="mb-4">
+        <Card.Body>
+          <Form onSubmit={handleRegister}>
+            <Form.Group className="mb-3" controlId="nome">
+              <Form.Label>Nome Completo</Form.Label>
+              <Form.Control
+                type="text"
+                name="nome"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                placeholder="Digite o nome completo"
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="cpf">
+              <Form.Label>CPF</Form.Label>
+              <Form.Control
+                type="text"
+                name="cpf"
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
+                placeholder="Digite o CPF"
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="telefone">
+              <Form.Label>Telefone</Form.Label>
+              <Form.Control
+                type="text"
+                name="telefone"
+                value={telefone}
+                onChange={(e) => setTelefone(e.target.value)}
+                placeholder="Digite o telefone"
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Digite o email"
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="senha">
+              <Form.Label>Senha</Form.Label>
+              <Form.Control
+                type="password"
+                name="senha"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                placeholder="Digite a senha"
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="placaMoto">
+              <Form.Label>Placa da Moto</Form.Label>
+              <Form.Control
+                type="text"
+                name="placaMoto"
+                value={placaMoto}
+                onChange={(e) => setPlacaMoto(e.target.value)}
+                placeholder="Digite a placa da moto"
+                required
+              />
+            </Form.Group>
+            <div className="d-flex justify-content-between">
+              <Button type="submit" variant="danger">Cadastrar</Button>
+              <Button onClick={limparCampos} variant="secondary">Limpar Campos</Button>
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 }
 

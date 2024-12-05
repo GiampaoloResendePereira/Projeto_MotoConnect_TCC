@@ -52,55 +52,72 @@ function CadastroCliente() {
   };
 
   const handleVoltar = () => {
-    navigate('/login'); // Navega para a página de login
+    navigate('/'); // Navega para a tela inicial
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Cadastro Cliente</h2>
-      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-      <form onSubmit={handleRegister}>
-        <div className="mb-3">
-          <label htmlFor="nome" className="form-label">Nome</label>
-          <input
-            type="text"
-            className="form-control"
-            id="nome"
-            placeholder="Digite seu nome"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            required
-          />
+    <div className="container-fluid d-flex justify-content-center align-items-center min-vh-100 bg-light">
+      <div className="card p-4 shadow-lg w-100" style={{ maxWidth: '600px' }}>
+        <div className="card-body">
+          <h2 className="card-title text-center mb-4 bg-dark text-white p-2 rounded">Cadastro Cliente</h2>
+          {errorMessage && (
+            <div className="alert alert-danger" role="alert">
+              {errorMessage}
+            </div>
+          )}
+          <form onSubmit={handleRegister} className="needs-validation" noValidate>
+            <div className="mb-3">
+              <label htmlFor="nome" className="form-label">Nome</label>
+              <input
+                type="text"
+                className="form-control"
+                id="nome"
+                placeholder="Digite seu nome"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                required
+              />
+              <div className="invalid-feedback">
+                O nome deve ter pelo menos 3 caracteres.
+              </div>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                placeholder="Digite seu email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <div className="invalid-feedback">
+                Por favor, insira um email válido.
+              </div>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="senha" className="form-label">Senha</label>
+              <input
+                type="password"
+                className="form-control"
+                id="senha"
+                placeholder="Digite sua senha"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                required
+              />
+              <div className="invalid-feedback">
+                A senha deve ter pelo menos 6 caracteres.
+              </div>
+            </div>
+            <div className="d-flex justify-content-between">
+              <button type="submit" className="btn btn-danger">Cadastrar</button>
+              <button type="button" className="btn btn-secondary" onClick={handleVoltar}>Voltar</button>
+            </div>
+          </form>
         </div>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email</label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            placeholder="Digite seu email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="senha" className="form-label">Senha</label>
-          <input
-            type="password"
-            className="form-control"
-            id="senha"
-            placeholder="Digite sua senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">Cadastrar</button>
-        <button onClick={handleVoltar} className="btn btn-secondary" style={{ marginLeft: '10px' }}>
-          Voltar
-        </button>
-      </form>
+      </div>
     </div>
   );
 }

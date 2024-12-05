@@ -39,69 +39,58 @@ function Login() {
     }
   };
 
+  const handleCadastro = () => {
+    navigate('/cadastro-cliente');
+  };
+
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '100vh',
-      backgroundColor: '#f5f5f5'
-    }}>
-      <div className="login-container"
-        style={{
-          padding: '20px',
-          width: '80%',
-          maxWidth: '600px',
-          margin: '0 auto',
-          textAlign: 'center',
-          background: '#f0f0f0',
-          borderRadius: '8px',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
-        }}>
-        <img
-          src={logo}
-          alt="Logo"
-          className="login-logo"
-          style={{ width: '250px', height: 'auto', marginBottom: '20px' }}
-        />
-        {errorMessage && (
-          <div
-            className="alert alert-danger"
-            role="alert"
-            style={{ marginBottom: '20px' }}
-          >
-            {errorMessage}
-          </div>
-        )}
-        <form className="login-form" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }} onSubmit={handleLogin}>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              placeholder="Digite seu email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="senha" className="form-label">Senha</label>
-            <input
-              type="password"
-              className="form-control"
-              id="senha"
-              placeholder="Digite sua senha"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="btn btn-danger">Entrar</button>
-          <p className="mt-3">Não tem uma conta? <Link to="/cadastro-cliente">Cadastre-se</Link></p>
-          <p className="mt-3">Esqueceu sua senha? <Link to="/recuperacao-senha">Recuperar Senha</Link></p>
-        </form>
+    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+      <div className="card p-4 shadow-lg" style={{ maxWidth: '400px', width: '100%' }}>
+        <div className="card-body text-center">
+          <img src={logo} alt="Logo" className="mb-4" style={{ width: '150px', height: 'auto' }} />
+          {errorMessage && (
+            <div className="alert alert-danger" role="alert">
+              {errorMessage}
+            </div>
+          )}
+          <form onSubmit={handleLogin} className="needs-validation" noValidate>
+            <div className="mb-3 text-start">
+              <label htmlFor="email" className="form-label">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                placeholder="Digite seu email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <div className="invalid-feedback">
+                Por favor, insira um email válido.
+              </div>
+            </div>
+            <div className="mb-3 text-start">
+              <label htmlFor="senha" className="form-label">Senha</label>
+              <input
+                type="password"
+                className="form-control"
+                id="senha"
+                placeholder="Digite sua senha"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                required
+              />
+              <div className="invalid-feedback">
+                Por favor, insira sua senha.
+              </div>
+            </div>
+            <button type="submit" className="btn btn-danger w-100">Entrar</button>
+            <button type="button" className="btn btn-secondary w-100 mt-3" onClick={handleCadastro}>Cadastre-se</button>
+          </form>
+          <p className="mt-3">
+            Esqueceu sua senha? <Link to="/recuperacao-senha" style={{ color: 'red' }}>Recuperar Senha</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

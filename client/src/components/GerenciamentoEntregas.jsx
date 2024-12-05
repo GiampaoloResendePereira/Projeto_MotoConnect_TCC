@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Badge, Modal, Button } from 'react-bootstrap';
+import { Table, Badge, Modal, Button, Container, Row, Col, Alert, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 function GerenciamentoEntregas() {
@@ -8,6 +8,8 @@ function GerenciamentoEntregas() {
   const [selectedEntrega, setSelectedEntrega] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState('');
+  const [filterId, setFilterId] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
 
   useEffect(() => {
     const fetchEntregas = async () => {
@@ -47,43 +49,83 @@ function GerenciamentoEntregas() {
 
   const handleCloseModal = () => setShowModal(false);
 
-  const handleVoltar = () => {
-    navigate('/administrador'); // Navega para a página anterior
-  };
-
+  const filteredEntregas = entregas.filter((entrega) => {
+    return (
+      (!filterId || entrega.id.toString().includes(filterId)) &&
+      (!filterStatus || entrega.status.toLowerCase().includes(filterStatus.toLowerCase()))
+    );
+  });
 
   return (
-    <div className="container bg-light p-5">
-      <h2 className="bg-dark text-white rounded p-3 mb-4">Gerenciamento de Entregas</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <Table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome Origem</th>
-            <th>Endereço Origem</th>
-            <th>Nome Destino</th>
-            <th>Endereço Destino</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {entregas.map((entrega) => (
-            <tr key={entrega.id}>
-              <td>{entrega.id}</td>
-              <td>{entrega.nome_origem}</td>
-              <td>{`${entrega.endereco_origem}, ${entrega.numero_origem}, ${entrega.bairro_origem}, ${entrega.cep_origem}`}</td>
-              <td>{entrega.nome_destino}</td>
-              <td>{`${entrega.endereco_destino}, ${entrega.numero_destino}, ${entrega.bairro_destino}, ${entrega.cep_destino}`}</td>
-              <td>{getStatusBadge(entrega.status)}</td>
-              <td>
-                <Button variant="info" onClick={() => handleShowModal(entrega)}>Detalhes</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+    <Container className="bg-light p-5 rounded shadow-lg">
+      <Row className="mb-4">
+        <Col>
+          <h2 className="bg-dark text-white rounded p-3">Gerenciamento de Entregas</h2>
+        </Col>
+      </Row>
+      {error && (
+        <Row className="mb-3">
+          <Col>
+            <Alert variant="danger">{error}</Alert>
+          </Col>
+        </Row>
+      )}
+      <Row className="mb-3">
+        <Col md={6}>
+          <Form.Group controlId="filterId">
+            <Form.Label>Numero do Pedido</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Filtrar por Numero do Pedido"
+              value={filterId}
+              onChange={(e) => setFilterId(e.target.value)}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group controlId="filterStatus">
+            <Form.Label>Status</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Filtrar por Status"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Table bordered hover className="bg-white rounded">
+            <thead className="bg-dark text-white">
+              <tr>
+                <th>Numero Pedido</th>
+                <th>Nome Origem</th>
+                <th>Endereço Origem</th>
+                <th>Nome Destino</th>
+                <th>Endereço Destino</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredEntregas.map((entrega) => (
+                <tr key={entrega.id}>
+                  <td>{entrega.id}</td>
+                  <td>{entrega.nome_origem}</td>
+                  <td>{`${entrega.endereco_origem}, ${entrega.numero_origem}, ${entrega.bairro_origem}, ${entrega.cep_origem}`}</td>
+                  <td>{entrega.nome_destino}</td>
+                  <td>{`${entrega.endereco_destino}, ${entrega.numero_destino}, ${entrega.bairro_destino}, ${entrega.cep_destino}`}</td>
+                  <td>{getStatusBadge(entrega.status)}</td>
+                  <td>
+                    <Button variant="danger" onClick={() => handleShowModal(entrega)}>Detalhes</Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton className="bg-danger text-white">
@@ -92,7 +134,7 @@ function GerenciamentoEntregas() {
         <Modal.Body>
           {selectedEntrega && (
             <div>
-              <p><strong>ID:</strong> {selectedEntrega.id ?? 'N/A'}</p>
+              <p><strong>Numero Pedido:</strong> {selectedEntrega.id ?? 'N/A'}</p>
               <p><strong>Nome Origem:</strong> {selectedEntrega.nome_origem ?? 'N/A'}</p>
               <p><strong>Endereço Origem:</strong> {`${selectedEntrega.endereco_origem ?? 'N/A'}, ${selectedEntrega.numero_origem ?? 'N/A'}, ${selectedEntrega.bairro_origem ?? 'N/A'}, ${selectedEntrega.cep_origem ?? 'N/A'}`}</p>
               <p><strong>Nome Destino:</strong> {selectedEntrega.nome_destino ?? 'N/A'}</p>
@@ -112,11 +154,7 @@ function GerenciamentoEntregas() {
           <Button variant="secondary" onClick={handleCloseModal}>Fechar</Button>
         </Modal.Footer>
       </Modal>
-
-      <button onClick={handleVoltar} className="btn btn-secondary">
-          Voltar
-        </button>
-    </div>
+    </Container>
   );
 }
 

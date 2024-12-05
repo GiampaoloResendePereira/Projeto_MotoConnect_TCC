@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from '../images/logo.png'; // Certifique-se de que o caminho está correto
 import { Navbar, Container, Nav } from 'react-bootstrap';
+import CalculoFrete from './CalculoFrete';
+import AcompanhamentoFrete from './AcompanhamentoFrete';
 
 function Cliente() {
   const location = useLocation();
   const user = location.state?.user || { nome: 'Usuário' };
   const navigate = useNavigate();
+  const [activeComponent, setActiveComponent] = useState('CalculoFrete');
 
   const handleClienteLogout = () => {
     navigate("/"); // Redireciona para a tela de login ou página inicial
+  };
+
+  const renderComponent = () => {
+    switch(activeComponent) {
+      case 'CalculoFrete':
+        return <CalculoFrete />;
+      case '':
+        return <AcompanhamentoFrete />;
+      default:
+        return <CalculoFrete />;
+    }
   };
 
   return (
@@ -26,8 +40,8 @@ function Cliente() {
         <Container className="d-flex justify-content-between align-items-center">
           <img src={logo} alt="Logo" height="50" />
           <Nav className="me-auto">
-          <Nav.Link href="/calculo-frete">Solicitação de Transporte</Nav.Link>
-            <Nav.Link href="/acompanhamento-frete">Acompanhamento do frete</Nav.Link>
+            <Nav.Link onClick={() => setActiveComponent('CalculoFrete')}>Solicitação de Transporte</Nav.Link>
+            <Nav.Link onClick={() => setActiveComponent('AcompanhamentoFrete')}>Acompanhamento do Frete</Nav.Link>
           </Nav>
           <div className="d-flex align-items-center text-white">
             <button className="btn btn-secondary" onClick={handleClienteLogout}>
@@ -36,6 +50,9 @@ function Cliente() {
           </div>
         </Container>
       </Navbar>
+      <div className="p-4">
+        {renderComponent()}
+      </div>
     </div>
   );
 }

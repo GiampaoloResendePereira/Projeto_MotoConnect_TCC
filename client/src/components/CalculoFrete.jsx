@@ -176,9 +176,6 @@ function CalculoFrete() {
 
   return (
 
-
-
-
     <div className="container bg-light p-5">
   <h4 className="bg-dark text-white rounded p-3 mb-4">Cálculo de Frete</h4>
   {error && <div className="alert alert-danger">{error}</div>}
@@ -379,14 +376,6 @@ function CalculoFrete() {
     
   </div>
   
-
-  
-
-
-
-
-
-
 );
 }
 

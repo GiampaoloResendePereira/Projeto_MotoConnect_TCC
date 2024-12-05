@@ -1,17 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from '../images/logo.png'; // Certifique-se de que o caminho está correto
 import { Navbar, Container, Nav } from 'react-bootstrap';
+import EntregasAbertas from './EntregasAbertas';
+import MinhasEntregas from './MinhasEntregas';
 
 function Motoboy() {
   const location = useLocation();
   const user = location.state?.user || { nome: 'Motoboy' };
   const navigate = useNavigate(); // Hook para navegação entre as rotas
+  const [activeComponent, setActiveComponent] = useState('EntregasAbertas');
 
   // Função de navegação para a tela de login (ou página inicial)
   const handleMotoboyLogout = () => {
     navigate("/"); // Redireciona para a tela de login ou página inicial
+  };
+
+  const renderComponent = () => {
+    switch(activeComponent) {
+      case 'EntregasAbertas':
+        return <EntregasAbertas />;
+      case 'MinhasEntregas':
+        return <MinhasEntregas />;  
+      default:
+        return <EntregasAbertas />;
+    }
   };
 
   return (
@@ -27,8 +41,8 @@ function Motoboy() {
         <Container className="d-flex justify-content-between align-items-center">
           <img src={logo} alt="Logo" height="50" />
           <Nav className="me-auto">
-            <Nav.Link href="/entregas-abertas">Entregas Abertas</Nav.Link>
-            <Nav.Link href="/minhas-entregas">Minhas Entregas</Nav.Link>
+          <Nav.Link onClick={() => setActiveComponent('EntregasAbertas')}>Entregas Abertas</Nav.Link>
+          <Nav.Link onClick={() => setActiveComponent('MinhasEntregas')}>Minhas Entregas</Nav.Link>
           </Nav>
           <div className="d-flex align-items-center text-white">
             <button className="btn btn-secondary" onClick={handleMotoboyLogout}>
@@ -37,6 +51,9 @@ function Motoboy() {
           </div>
         </Container>
       </Navbar>
+      <div className="p-4">
+        {renderComponent()}
+      </div>
     </div>
   );
 }
