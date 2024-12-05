@@ -7,7 +7,9 @@ import { calcularFrete, solicitarFrete } from './controllers/solicitarfrete/Calc
 import { fetchFretes, editFrete } from './controllers/solicitarfrete/EditarParametroController.js';
 import EntregasAbertasController from './controllers/motoboy/EntregasAbertasController.js';
 import EntregasController from './controllers/administrador/EntregasController.js';
-import { getRelatorio } from './controllers/administrador/RelatorioController.js'; // Importando o controlador do relatório
+import { getRelatorio } from './controllers/administrador/RelatorioController.js';
+import { getUserByEmail } from './controllers/FindUserController.js'; // Importando o controlador de busca de usuário
+import { updateSenha } from './controllers/UpdatePasswordController.js'; // Importando o controlador de atualização de senha
 
 const app = express();
 const port = 5000;
@@ -27,7 +29,9 @@ app.put('/api/entregas-abertas/:id/accept', EntregasAbertasController.acceptEntr
 app.put('/api/entregas-abertas/:id', EntregasAbertasController.updateStatus);
 app.get('/api/entregas', EntregasController.getEntregas);
 app.get('/api/entregas/:id', EntregasController.getEntregaById);
-app.get('/api/relatorio', getRelatorio); // Nova rota para o relatório
+app.get('/api/relatorio', getRelatorio);
+app.post('/api/users/find-user', getUserByEmail); // Nova rota para buscar usuário por email
+app.post('/api/users/update-senha', updateSenha); // Nova rota para atualização de senha
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
