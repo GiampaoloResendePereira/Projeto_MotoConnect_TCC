@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 
 function RecuperacaoSenha() {
   const [email, setEmail] = useState('');
@@ -8,6 +9,7 @@ function RecuperacaoSenha() {
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,6 +48,7 @@ function RecuperacaoSenha() {
     <div className="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
       <div className="card p-4 shadow-lg" style={{ maxWidth: '500px', width: '100%' }}>
         <div className="card-body">
+          
           <h2 className="card-title text-center mb-4 bg-dark text-white p-2 rounded">Recuperação de Senha</h2>
           {error && <div className="alert alert-danger">{error}</div>}
           {success && <div className="alert alert-success">{success}</div>}
@@ -63,6 +66,12 @@ function RecuperacaoSenha() {
               />
             </div>
             <button type="submit" className="btn btn-danger w-100">Enviar Email de Recuperação</button>
+            <button 
+            className="btn btn-secondary mb-4 mt-5"  
+            onClick={() => navigate(-1)}
+          >
+            Voltar
+          </button>
           </form>
 
           {showModal && (
