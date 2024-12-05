@@ -36,3 +36,5 @@ app.post('/api/users/update-senha', updateSenha); // Nova rota para atualizaçã
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
 });
+
+//npm install axios@1.7.8 bcryptjs@2.4.3 body-parser@1.20.3 cors@2.8.5 dotenv@16.4.5 express@4.21.1 jsonwebtoken@9.0.2 multer@1.4.5-lts.1 mysql@2.18.1 mysql2@3.11.5 sequelize-cli@6.6.2 sequelize@6.37.5
