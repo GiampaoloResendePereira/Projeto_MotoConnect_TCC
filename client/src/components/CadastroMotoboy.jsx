@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, Form, Button, Alert, Card } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, Toast, ToastContainer } from 'react-bootstrap';
 
 function CadastroMotoboy() {
   const [nome, setNome] = useState('');
@@ -11,6 +11,7 @@ function CadastroMotoboy() {
   const [senha, setSenha] = useState('');
   const [placaMoto, setPlacaMoto] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -29,8 +30,10 @@ function CadastroMotoboy() {
         throw new Error('Erro ao registrar motoboy');
       }
 
-      alert('Motoboy registrado com sucesso!');
-      navigate('/administrador');
+      setSuccessMessage('Motoboy registrado com sucesso!');
+      setTimeout(() => {
+        navigate('/administrador');
+      }, 3000);
     } catch (error) {
       console.error('Erro ao registrar motoboy:', error);
       setErrorMessage('Erro ao registrar motoboy');
@@ -78,23 +81,47 @@ function CadastroMotoboy() {
     setSenha('');
     setPlacaMoto('');
     setErrorMessage('');
+    setSuccessMessage('');
   };
 
   return (
-    <Container className="bg-light p-5 rounded shadow-lg ">
+    <Container className="bg-light p-5 rounded shadow-lg">
       <Row className="mb-4">
         <Col>
           <h2 className="bg-dark text-white rounded p-3">Cadastro de Motoboy</h2>
         </Col>
       </Row>
 
-      {errorMessage && (
-        <Row className="mb-3">
-          <Col>
-            <Alert variant="danger">{errorMessage}</Alert>
-          </Col>
-        </Row>
-      )}
+      {/* Toast Container para mensagens de sucesso ou erro */}
+      <ToastContainer
+        className="p-3"
+        position="middle-center" // Centraliza o Toast no meio da tela
+        style={{ zIndex: 1050 }}
+      >
+        {/* Mostrar Toast de Sucesso, caso haja mensagem */}
+        {successMessage && (
+          <Toast onClose={() => setSuccessMessage('')} show={!!successMessage} delay={3000} autohide bg="success" style={{ borderRadius: '10px', boxShadow: '0px 4px 12px rgba(0, 128, 0, 0.3)' }}>
+            <Toast.Header>
+              <strong className="me-auto"> Sucesso!</strong>
+            </Toast.Header>
+            <Toast.Body style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>
+              {successMessage}
+            </Toast.Body>
+          </Toast>
+        )}
+
+        {/* Mostrar Toast de Erro, caso haja mensagem */}
+        {errorMessage && (
+          <Toast onClose={() => setErrorMessage('')} show={!!errorMessage} delay={3000} autohide bg="danger" style={{ borderRadius: '10px', boxShadow: '0px 4px 12px rgba(255, 0, 0, 0.3)' }}>
+            <Toast.Header>
+              <strong className="me-auto">⚠️ Erro</strong>
+            </Toast.Header>
+            <Toast.Body style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>
+              {errorMessage}
+            </Toast.Body>
+          </Toast>
+        )}
+      </ToastContainer>
 
       <Card className="mb-4">
         <Card.Body>

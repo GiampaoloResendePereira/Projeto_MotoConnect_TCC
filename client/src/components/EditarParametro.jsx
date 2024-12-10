@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, Form, Button, Alert, Spinner, Card } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Spinner, Card, Toast, ToastContainer } from 'react-bootstrap';
 
 function EditarParametro() {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState('');
   const [frete, setFrete] = useState({
     id: '',
     menos_1kg: '',
@@ -17,15 +18,14 @@ function EditarParametro() {
     tempo_deslocamento: ''
   });
 
- 
-
   const fetchFretes = async () => {
     setLoading(true);
     setErro('');
+    setSucesso('');
     try {
       const response = await axios.get('http://localhost:5000/api/fretes');
       if (response.data && response.data.length > 0) {
-        setFrete(response.data[0]); // Carregar valores atuais para edição
+        setFrete(response.data[0]);
       } else {
         setErro('Nenhum frete encontrado.');
       }
@@ -50,9 +50,11 @@ function EditarParametro() {
 
   const salvarAlteracoes = async () => {
     setLoading(true);
+    setErro('');
+    setSucesso('');
     try {
-      await axios.put(`http://localhost:5000/api/fretes/${frete.id}`, frete); // Usar o ID da linha existente
-      alert('Frete atualizado com sucesso!');
+      await axios.put(`http://localhost:5000/api/fretes/${frete.id}`, frete);
+      setSucesso('Frete atualizado com sucesso!');
     } catch (err) {
       setErro('Erro ao salvar alterações');
     }
@@ -81,13 +83,33 @@ function EditarParametro() {
       </Row>
 
       {loading && <Spinner animation="border" className="mb-3" />}
-      {erro && (
-        <Row className="mb-3">
-          <Col>
-            <Alert variant="danger">{erro}</Alert>
-          </Col>
-        </Row>
-      )}
+
+      {/* Toast centralizado */}
+      <ToastContainer
+        className="p-3"
+        position="middle-center" // Centralizar vertical e horizontalmente
+        style={{ zIndex: 1050 }}
+      >
+        {/* Mostrar Toast de Sucesso, caso haja mensagem */}
+        {sucesso && (
+          <Toast onClose={() => setSucesso('')} show={!!sucesso} delay={3000} autohide bg="success">
+            <Toast.Header>
+              <strong className="me-auto">Sucesso</strong>
+            </Toast.Header>
+            <Toast.Body>{sucesso}</Toast.Body>
+          </Toast>
+        )}
+
+        {/* Mostrar Toast de Erro, caso haja mensagem */}
+        {erro && (
+          <Toast onClose={() => setErro('')} show={!!erro} delay={3000} autohide bg="danger">
+            <Toast.Header>
+              <strong className="me-auto">Erro</strong>
+            </Toast.Header>
+            <Toast.Body>{erro}</Toast.Body>
+          </Toast>
+        )}
+      </ToastContainer>
 
       <Card className="mb-4">
         <Card.Body>

@@ -7,6 +7,7 @@ function CadastroCliente() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -25,8 +26,12 @@ function CadastroCliente() {
         throw new Error('Erro ao registrar usuário');
       }
 
-      alert('Usuário registrado com sucesso! Faça login para continuar.');
-      navigate('/login');
+      setSuccessMessage('Usuário registrado com sucesso!');
+      
+      // Redireciona para a tela de login após 3 segundos
+      setTimeout(() => {
+        navigate('/');  
+      }, 3000);  // 3 segundos de espera para o usuário ver a mensagem
     } catch (error) {
       console.error('Erro ao registrar usuário:', error);
       setErrorMessage('Erro ao registrar usuário');
@@ -52,7 +57,7 @@ function CadastroCliente() {
   };
 
   const handleVoltar = () => {
-    navigate('/'); // Navega para a tela inicial
+    navigate('/'); // Navega para a tela de login
   };
 
   return (
@@ -63,6 +68,30 @@ function CadastroCliente() {
           {errorMessage && (
             <div className="alert alert-danger" role="alert">
               {errorMessage}
+            </div>
+          )}
+          {successMessage && (
+            <div 
+              className="alert alert-danger" 
+              role="alert" 
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'red',
+                color: 'white',
+                fontWeight: 'bold',
+                padding: '15px 30px',
+                textAlign: 'center',
+                zIndex: 9999,
+                border: '1px solid darkred',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                opacity: 1,
+                transition: 'opacity 0.5s ease-in-out',
+              }}
+            >
+              {successMessage}
             </div>
           )}
           <form onSubmit={handleRegister} className="needs-validation" noValidate>
@@ -77,9 +106,6 @@ function CadastroCliente() {
                 onChange={(e) => setNome(e.target.value)}
                 required
               />
-              <div className="invalid-feedback">
-                O nome deve ter pelo menos 3 caracteres.
-              </div>
             </div>
             <div className="mb-3">
               <label htmlFor="email" className="form-label">Email</label>
@@ -92,9 +118,6 @@ function CadastroCliente() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              <div className="invalid-feedback">
-                Por favor, insira um email válido.
-              </div>
             </div>
             <div className="mb-3">
               <label htmlFor="senha" className="form-label">Senha</label>
@@ -107,9 +130,6 @@ function CadastroCliente() {
                 onChange={(e) => setSenha(e.target.value)}
                 required
               />
-              <div className="invalid-feedback">
-                A senha deve ter pelo menos 6 caracteres.
-              </div>
             </div>
             <div className="d-flex justify-content-between">
               <button type="submit" className="btn btn-danger">Cadastrar</button>
