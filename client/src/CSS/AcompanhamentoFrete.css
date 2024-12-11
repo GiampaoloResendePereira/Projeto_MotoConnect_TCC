@@ -1,0 +1,22 @@
+.moving-container {
+  width: 100%; /* Ajuste conforme necessário */
+  overflow: hidden;
+  position: relative;
+}
+
+.moving-moto {
+  width: 100px; /* Ajuste conforme o tamanho da imagem */
+  animation: moveMoto 2s linear infinite; /* Duração de 2 segundos para ser mais rápido */
+}
+
+@keyframes moveMoto {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(calc(500vw - 500px)); /* Ajuste para o tamanho da imagem */
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
