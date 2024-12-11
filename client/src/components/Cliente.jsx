@@ -20,7 +20,7 @@ function Cliente() {
     switch(activeComponent) {
       case 'CalculoFrete':
         return <CalculoFrete />;
-      case 'AcompanhamentoFrete':
+      case '':
         return <AcompanhamentoFrete />;
       default:
         return <CalculoFrete />;

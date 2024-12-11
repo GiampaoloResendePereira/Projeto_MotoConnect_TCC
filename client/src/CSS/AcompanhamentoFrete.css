@@ -14,7 +14,7 @@
     transform: translateX(0);
   }
   50% {
-    transform: translateX(calc(500vw - 500px)); /* Ajuste para o tamanho da imagem */
+    transform: translateX(calc(50vw - 50px)); /* Ajuste para o tamanho da imagem */
   }
   100% {
     transform: translateX(0);

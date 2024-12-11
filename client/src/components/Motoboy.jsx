@@ -21,7 +21,7 @@ function Motoboy() {
     switch(activeComponent) {
       case 'EntregasAbertas':
         return <EntregasAbertas />;
-      case 'MinhasEntregas':
+      case '':
         return <MinhasEntregas />;  
       default:
         return <EntregasAbertas />;
