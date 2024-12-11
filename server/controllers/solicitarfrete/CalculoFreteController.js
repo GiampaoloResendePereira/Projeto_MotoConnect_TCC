@@ -54,7 +54,7 @@ const calcularFrete = async (req, res) => {
     const custoKm = parseFloat(parametros.km_rodado);
     const custoDeslocamento = parseFloat(parametros.tempo_deslocamento);
 
-    const valorTotalFrete = parseFloat((valorFrete + (distancia * custoKm) + custoDeslocamento).toFixed(2));
+    const valorTotalFrete = parseFloat((valorFrete + (distancia * custoKm) + ( tempoDeslocamento * custoDeslocamento)).toFixed(2));
 
     console.log('Valor Total do Frete:', valorTotalFrete);
 

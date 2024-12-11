@@ -10,6 +10,7 @@ import EntregasController from './controllers/administrador/EntregasController.j
 import { getRelatorio } from './controllers/administrador/RelatorioController.js';
 import { getUserByEmail } from './controllers/FindUserController.js'; // Importando o controlador de busca de usuário
 import { updateSenha } from './controllers/UpdatePasswordController.js'; // Importando o controlador de atualização de senha
+import { getFretesByUserId } from './controllers/solicitarfrete/AcompanhamentoController.js';
 
 const app = express();
 const port = 5000;
@@ -32,6 +33,7 @@ app.get('/api/entregas/:id', EntregasController.getEntregaById);
 app.get('/api/relatorio', getRelatorio);
 app.post('/api/users/find-user', getUserByEmail); // Nova rota para buscar usuário por email
 app.post('/api/users/update-senha', updateSenha); // Nova rota para atualização de senha
+app.get('/api/entregas', getFretesByUserId);
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
